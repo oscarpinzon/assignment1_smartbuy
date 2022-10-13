@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Assignment 1 SmartBuy</string>
     <string name="title">SmartBuy</string>
+    <string name="name_prompt">Name:</string>
+    <string name="email_prompt">Email:</string>
+    <string name="country_prompt">Country</string>
+    <string name="computer_type_prompt">Computer Type:</string>
+    <string name="desktop_type">Desktop</string>
+    <string name="laptop_type">Laptop</string>
 </resources>
