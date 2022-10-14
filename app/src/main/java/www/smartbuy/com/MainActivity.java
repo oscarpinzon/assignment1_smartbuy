@@ -17,25 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    // Available countries
-    static final String[] COUNTRIES = new String[]{
-            "Belgium", "France", "Italy", "Germany", "Canada"
-    };
-
-    // Computer types
-    enum ComputerType {
-        Desktop,
-        Laptop
-    }
-
     // Current computer type to track selected state
-    ComputerType currentComputerType;
-
-    // Available brands
-    static final String[] BRANDS = new String[]{
-            "Dell", "HP", "Lenovo"
-    };
-
+    Store.ComputerTypes currentComputerType;
     String addedPeripherals = "";
 
     // Reference to Widgets
@@ -48,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     TextView peripheralsPrompt, invoiceTextView;
     Button btnSubmit;
 
+    // onCreate method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create an adapter and set it to the AutoCompleteTextView
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+                android.R.layout.simple_dropdown_item_1line, Store.getCountries());
         countryTextView.setAdapter(adapter);
 
         // hide peripherals radio group
@@ -90,12 +74,14 @@ public class MainActivity extends AppCompatActivity {
             RadioButton radioButton = group.findViewById(checkedId);
             // set current computer type
             if (radioButton == rdDesktop) {
-                currentComputerType = ComputerType.Desktop;
+                // show desktop peripherals and hide laptop peripherals
+                currentComputerType = Store.ComputerTypes.Desktop;
                 peripheralsPrompt.setVisibility(android.view.View.VISIBLE);
                 desktopPeripheralsRadioGroup.setVisibility(RadioGroup.VISIBLE);
                 laptopPeripheralsRadioGroup.setVisibility(RadioGroup.GONE);
             } else if (radioButton == rdLaptop) {
-                currentComputerType = ComputerType.Laptop;
+                // show laptop peripherals and hide desktop peripherals
+                currentComputerType = Store.ComputerTypes.Laptop;
                 peripheralsPrompt.setVisibility(android.view.View.VISIBLE);
                 laptopPeripheralsRadioGroup.setVisibility(RadioGroup.VISIBLE);
                 desktopPeripheralsRadioGroup.setVisibility(RadioGroup.GONE);
@@ -103,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Create an ArrayAdapter using the string array
-        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, BRANDS);
+        ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Store.getBrands());
         // Specify the layout to use when the list of choices appears
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -137,12 +123,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Attach event listener to submit button
         btnSubmit.setOnClickListener(v -> {
+            // Warns the user to pick a computer type
             if (currentComputerType == null) {
                 // print error message
                 Toast.makeText(this, "Please select a computer type", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            // adds invoice text to the invoice text view
             String invoice = "";
             invoice += "Customer: " + nameEditText.getText().toString() + "\n";
             invoice += "E-mail: " + emailEditText.getText().toString() + "\n";
@@ -164,9 +151,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // calculates the cost of the invoice
     private String calculateCost() {
         double cost = 0;
-        if (currentComputerType == ComputerType.Desktop) {
+        if (currentComputerType == Store.ComputerTypes.Desktop) {
             if(brandSpinner.getSelectedItem().toString().equals("Dell")) {
                 cost += 575;
             } else if(brandSpinner.getSelectedItem().toString().equals("HP")) {
@@ -174,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             } else if(brandSpinner.getSelectedItem().toString().equals("Lenovo")) {
                 cost += 500;
             }
-        } else if (currentComputerType == ComputerType.Laptop) {
+        } else if (currentComputerType == Store.ComputerTypes.Laptop) {
             if(brandSpinner.getSelectedItem().toString().equals("Dell")) {
                 cost += 1359;
             } else if(brandSpinner.getSelectedItem().toString().equals("HP")) {
